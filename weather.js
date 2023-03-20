@@ -1,4 +1,5 @@
 let key = '8596a6884998aa0936f55810263394e2'
+let history = []
 
 $('#submit').on('click', locate)
 
@@ -11,16 +12,23 @@ function locate() {
 
 function cities(name) {
     let url;
+    console.log(name)
+    if (name) {
     
-    name = encode(name)
-    url = new URL('http://api.openweathermap.org/geo/1.0/direct?q='+name+'&limit=50&appid='+ key)
-    console.log(url)
-    fetch(url,{method :'GET'})
-        .then(response => response.json())
-        .then(list => display(list,'cities'))
-            
-        .catch(err => console.error(err));
-    
+        name = encode(name)
+        url = new URL('http://api.openweathermap.org/geo/1.0/direct?q='+name+'&limit=50&appid='+ key)
+        console.log(url)
+        fetch(url,{method :'GET'})
+            .then(response => response.json())
+            .then(list => display(list,'cities'))
+                
+            .catch(err => console.error(err));
+        if (!history.includes(name)) {
+            console.log(history)
+            history.push(name)
+            $('#history').append('<button>'+name+'</button>').on('click', function() {cities(name)})
+        }
+    }
 }
 
 function display(list, id) {
@@ -34,6 +42,10 @@ function display(list, id) {
         }
         
     } 
+}
+
+function weathers(names) {
+
 }
 
 function encode(item) {
