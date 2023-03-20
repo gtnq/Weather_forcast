@@ -1,12 +1,20 @@
 let key = '8596a6884998aa0936f55810263394e2'
 let history = []
+let timeNow = new Date().getHours()
+console.log(timeNow, 'hour')
 
 $('#submit').on('click', locate)
+$('#resetHistory').on('click', function () { //only clear the history
+    $('#history').empty()
+})
 
-function removechild (){ 
-    while(historys.firstChild)
-        historys.removeChild(historys.lastChild)
-}
+$('#reset').on('click',  function () {  //clear the page, not including history
+    $('#current').empty()
+    $('#future').empty()
+    $('#city_names').empty()
+})
+
+
 
 function locate() {
     let city = $(this).siblings('#city').val()
@@ -16,12 +24,12 @@ function locate() {
 }
 
 function cities(name) {
-    let url;
+    let url, encoded;
     //console.log(name)
     if (name) {
     
-        name = encode(name)
-        url = new URL('http://api.openweathermap.org/geo/1.0/direct?q='+name+'&limit=50&appid='+ key)
+        encoded = encode(name)
+        url = new URL('http://api.openweathermap.org/geo/1.0/direct?q='+encoded+'&limit=50&appid='+ key)
         console.log(url)
         fetch(url,{method :'GET'})
             .then(response => response.json())
@@ -55,15 +63,29 @@ function display(list, id, city) {
         }
         
     } else if (id == 'weather') {
+
         $('#city_names').empty()
         
-        console.log(list, 'test')
-        $('#current').append("<h3>Today's weather at "+city+" </h3>")
         
-        showWeather(list[0], '#current')
+        //console.log(list, 'test')
+        let city_name = city.split(',')[0]
+        console.log(city_name, 'test split')
+        $('#current').append("<h3>Today's weather at "+city+
+            "  <button id = 'return'> Back to Search Result</button></h3>")
+        $('#return').on('click', function() {cities(city_name)})
+        
+        if (timeNow % 3 == 0) {
+            current = timeNow / 3 + 1
+            
+        } else {
+            current = timeNow % 3
+            
+        }
+        showWeather(list[Math.floor(timeNow / 3) + 1 ], '#current', true)
+        
         $('#current').append("<hr>")
         for (let i = 8; i < list.length; i +=8) {
-            showWeather(list[i], '#future')
+            showWeather(list[i], '#future', false)
             $('#future').append("<br>")
         }
     }
@@ -83,8 +105,13 @@ function encode(item) {
     return encodeURIComponent(item.trim())
 }
 
-function showWeather(obj, id) {
-    $(id).append("<div>"+obj.dt_txt.substr(0,10)+"</div>")
+function showWeather(obj, id, hour) {
+    
+    if (hour) {
+        $(id).append("<div>"+obj.dt_txt+"</div>")
+    } else {
+        $(id).append("<div>"+obj.dt_txt.substr(0,10)+"</div>")
+    }
     $(id).append("<div>Temperature: " + convert(obj.main.temp) + ' F</div>')
     $(id).append("<div>Feels like " + convert(obj.main.feels_like) + ' F</div>')
     $(id).append("<div>Highest at " + convert(obj.main.temp_max) + ' F</div>')
