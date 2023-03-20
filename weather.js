@@ -25,43 +25,50 @@ function cities(name) {
         console.log(url)
         fetch(url,{method :'GET'})
             .then(response => response.json())
-            .then(list => display(list,'cities'))
+            .then(list => display(list,'cities', ''))
                 
             .catch(err => console.error(err));
         if (!history.includes(name)) {
             //console.log(history)
             history.push(name)
-            $('#history').append('<button>'+name+'</button>').on('click', function() {cities(name)})
+            $('#history').append("<button class = '"+ name+ "'" >+name+'</button>')
+            $('.'+name).one('click', function() {cities(name)})
         }
     }
 }
 
-function display(list, id) {
+function display(list, id, city) {
     if (id == 'cities') {
         $('#current').empty()
         $('#future').empty()
+        $('#city_names').empty()
         let loc;
         let region_names = new Intl.DisplayNames(['en'], { type: 'region' });   //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DisplayNames
         console.log(list)
         for (let i = 0; i < list.length; i++) {
             loc = list[i].name + ', State of '+ list[i].state + ', In the Country of ' + region_names.of(list[i].country)
             console.log(loc)
-            $('#city_names').append('<button>'+loc+'</button>')
+            $('#city_names').append("<button class = 'item"+i+"'>"+loc+'</button>')
             $('#city_names').append('<br>')
+            $(".item"+i).one('click', function() {weathers(list[i].lat, list[i].lon, list[i].name)})
         }
         
     } else if (id == 'weather') {
         $('#city_names').empty()
-        console.log(list)
+        
+        console.log(list[0], 'test')
+        $('#current').append("<div>Today's weather at "+city+" </div>")
+        $('#current').append("<div>"+list[0].dt_txt+"</div>")
+        $('#current').append("Temperature:" + convert(list[0].main.temp))
     }
 
 }
 
-function weathers(lat, lon) {
+function weathers(lat, lon, city) {
     let url = new URL('http://api.openweathermap.org/data/2.5/forecast?lat='+lat+'&lon='+lon+'&appid='+key)
     fetch(url,{method :'GET'})
         .then(response => response.json())
-        .then(response => display(response.list,'weather'))
+        .then(response => display(response.list,'weather', city))
                 
 }   
 
@@ -69,7 +76,11 @@ function encode(item) {
     
     return encodeURIComponent(item.trim())
 }
-weathers(44.34,10.99)
+
+function showWeather(obj, div) {
+
+}
+//weathers(44.34,10.99)
 function convert(f) {
     return ((f-273.15)*1.8)+32
 }
