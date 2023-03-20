@@ -29,10 +29,11 @@ function cities(name) {
                 
             .catch(err => console.error(err));
         if (!history.includes(name)) {
-            //console.log(history)
+            
             history.push(name)
-            $('#history').append("<button class = '"+ name+ "'" >+name+'</button>')
-            $('.'+name).one('click', function() {cities(name)})
+            $('#history').append("<button class = '"+name+"'>" +name+"</button>")
+            $('.'+name).on('click', function() {cities(name)})
+            console.log(history, 'history')
         }
     }
 }
@@ -50,7 +51,7 @@ function display(list, id, city) {
             console.log(loc)
             $('#city_names').append("<button class = 'item"+i+"'>"+loc+'</button>')
             $('#city_names').append('<br>')
-            $(".item"+i).one('click', function() {weathers(list[i].lat, list[i].lon, list[i].name)})
+            $(".item"+i).one('click', function() {weathers(list[i].lat, list[i].lon, list[i].name + ',' + list[i].state)})
         }
         
     } else if (id == 'weather') {
@@ -59,7 +60,7 @@ function display(list, id, city) {
         console.log(list[0], 'test')
         $('#current').append("<div>Today's weather at "+city+" </div>")
         $('#current').append("<div>"+list[0].dt_txt+"</div>")
-        $('#current').append("Temperature:" + convert(list[0].main.temp))
+        $('#current').append("Temperature:" + convert(list[0].main.temp) + 'F')
     }
 
 }
@@ -82,5 +83,5 @@ function showWeather(obj, div) {
 }
 //weathers(44.34,10.99)
 function convert(f) {
-    return ((f-273.15)*1.8)+32
+    return Math.floor((((f-273.15)*1.8)+32) *10) / 10
 }
