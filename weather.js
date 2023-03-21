@@ -35,7 +35,7 @@ function cities(name) {
     if (name) {
     
         encoded = encode(name)
-        url = new URL('http://api.openweathermap.org/geo/1.0/direct?q='+encoded+'&limit=50&appid='+ key)
+        url = new URL('https://api.openweathermap.org/geo/1.0/direct?q='+encoded+'&limit=50&appid='+ key)
         //console.log(url)
         fetch(url,{method :'GET'})
             .then(response =>response.json())
@@ -105,7 +105,7 @@ function display(list, id, city) {
 }
 
 function weathers(lat, lon, city) {
-    let url = new URL('http://api.openweathermap.org/data/2.5/forecast?lat='+lat+'&lon='+lon+'&appid='+key)
+    let url = new URL('https://api.openweathermap.org/data/2.5/forecast?lat='+lat+'&lon='+lon+'&appid='+key)
     fetch(url,{method :'GET'})
         .then(response => response.json())
         .then(response => display(response.list,'weather', city))
