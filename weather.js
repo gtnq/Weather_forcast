@@ -7,6 +7,7 @@ console.log(timeNow, 'hour')
 $('#submit').on('click', locate)
 $('#resetHistory').on('click', function () { //only clear the history
     $('#history').empty()
+    localStorage.clear()
 })
 
 $('#reset').on('click',  function () {  //clear the page, not including history
@@ -59,7 +60,7 @@ function display(list, id, city) {
         console.log(list[0].name)
         fetch_result = true
         if (!history.includes(list[0].name) && fetch_result) {
-            
+            localStorage.setItem(localStorage.length+1, list[0].name)
             history.push(list[0].name)
             $('#history').append("<button class = '"+list[0].name+"'>" +list[0].name+"</button>")
             $('.'+list[0].name).on('click', function() {cities(list[0].name)})
