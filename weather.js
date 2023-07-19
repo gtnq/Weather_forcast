@@ -8,6 +8,7 @@ let his = document.querySelectorAll('#history')
 $('#submit').on('click', locate)
 $('#resetHistory').on('click', function () { //only clear the history
     $('#history').empty()
+    localStorage.clear()
 })
 
 $('#reset').on('click',  function () {  //clear the page, not including history
