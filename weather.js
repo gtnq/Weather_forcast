@@ -3,6 +3,7 @@ let history = []
 let timeNow = new Date().getHours()
 let fetch_result = false
 console.log(timeNow, 'hour')
+let his = document.querySelectorAll('#history')
 
 $('#submit').on('click', locate)
 $('#resetHistory').on('click', function () { //only clear the history
@@ -24,16 +25,19 @@ function noCityFound(situation) {
 
 function locate() {
     let city = $(this).siblings('#city').val()
-    console.log(city)
+    //console.log(city)
     cities(city)
 
 }
 
 function cities(name) {
     let url, encoded;
-    //console.log(name)
+    console.log(name)
+
     if (name) {
     
+        console.log(name)
+
         encoded = encode(name)
         url = new URL('https://api.openweathermap.org/geo/1.0/direct?q='+encoded+'&limit=50&appid='+ key)
         //console.log(url)
@@ -55,24 +59,30 @@ function display(list, id, city) {
         $('#city_names').empty()
         let loc;
         let region_names = new Intl.DisplayNames(['en'], { type: 'region' });   //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DisplayNames
-        console.log(list)
-        console.log(list[0].name)
+        //console.log(list)
+        //console.log(but_name)
         fetch_result = true
-        if (!history.includes(list[0].name) && fetch_result) {
+        let but_name = list[0].name
+        let classname = but_name.replace(/\s/g, '')
+        console.log(classname)
+        if (!history.includes(but_name) && fetch_result) {
             
-            history.push(list[0].name)
-            $('#history').append("<button class = '"+list[0].name+"'>" +list[0].name+"</button>")
-            $('.'+list[0].name).on('click', function() {cities(list[0].name)})
-            //console.log(history, 'history')
+            history.push(but_name)
+            $('#history').append("<button  id = 'hist_history'class = '"+classname+"'>" +but_name+"</button>")
+            $('.'+classname).on('click', function() {cities(but_name)})
+            //log the button append to the parent div 
+            console.log($('#history').children())
         }
         for (let i = 0; i < list.length; i++) {
-            loc = list[i].name + ', State of '+ list[i].state + ', In the Country of ' + region_names.of(list[i].country)
-            console.log(loc)
+            loc = list[i].name + ', State of '+ list[i].state + 'ß, In the Country of ' + region_names.of(list[i].country)
+            //console.log(loc)
             $('#city_names').append("<button class = 'item"+i+"'>"+loc+'</button>')
             $('#city_names').append('<br>')
             $(".item"+i).one('click', function() {weathers(list[i].lat, list[i].lon, list[i].name + ', ' + list[i].state)})
         }
         fetch_result = false
+        
+        //console.log(his.chil, 'history')
         
     } else if (id == 'weather') {
 
